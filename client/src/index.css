@@ -64,3 +64,9 @@ button:active { transform: scale(.97); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+@media print {
+  aside, nav, header, .print\:hidden { display: none !important; }
+  body, main, .min-h-screen { background: #ffffff !important; }
+  * { box-shadow: none !important; }
+}

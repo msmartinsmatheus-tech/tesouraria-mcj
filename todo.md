@@ -85,3 +85,11 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 - [x] Tornar o verde a cor predominante da identidade visual do MCJ
 - [x] Revisar contraste, botões, sidebar, cards e estados financeiros com a nova paleta
 - [x] Validar a paleta verde em desktop e celular
+
+## Bugs reportados — conciliação, PDF e exclusão
+
+- [x] Implementar ação real para conciliar lançamentos com extratos, com confirmação e atualização de status
+- [x] Implementar geração e download de relatório financeiro em PDF
+- [x] Implementar exclusão segura de movimentações com confirmação, auditoria e atualização das queries
+- [x] Adicionar testes Vitest para conciliação, geração de relatório e exclusão
+- [x] Validar os três fluxos no preview em desktop e celular

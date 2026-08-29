@@ -2,21 +2,21 @@
 
 - [x] Definir identidade visual executiva, elegante e responsiva para a Tesouraria MCJ
 - [x] Criar layout autenticado com navegação lateral e acesso seguro aos usuários
-- [ ] Implementar dashboard com saldo consolidado, receitas, despesas, resultado e movimentações recentes
-- [ ] Implementar cadastro, edição e consulta de lançamentos financeiros
-- [ ] Suportar tipo, valor, data, categoria, tags e observações nos lançamentos
-- [ ] Implementar importação de extratos em PDF com pré-visualização antes da confirmação
-- [ ] Implementar armazenamento seguro de PDFs e comprovantes com referências vinculadas
-- [ ] Implementar conciliação entre lançamentos e extratos importados
-- [ ] Exibir estados pendente, classificado, divergência e conciliado
-- [ ] Implementar gerenciamento de categorias e tags
-- [ ] Implementar relatórios financeiros filtráveis
-- [ ] Implementar histórico de auditoria para rastrear alterações
-- [ ] Criar persistência de dados no banco sem perda em atualizações
+- [x] Implementar dashboard com saldo consolidado, receitas, despesas, resultado e movimentações recentes
+- [x] Implementar cadastro, edição e consulta de lançamentos financeiros
+- [x] Suportar tipo, valor, data, categoria, tags e observações nos lançamentos
+- [x] Implementar importação de extratos em PDF com pré-visualização antes da confirmação
+- [x] Implementar armazenamento seguro de PDFs e comprovantes com referências vinculadas
+- [x] Implementar conciliação entre lançamentos e extratos importados
+- [x] Exibir estados pendente, classificado, divergência e conciliado
+- [x] Implementar gerenciamento de categorias e tags
+- [x] Implementar relatórios financeiros filtráveis
+- [x] Implementar histórico de auditoria para rastrear alterações
+- [x] Criar persistência de dados no banco sem perda em atualizações
 - [x] Criar modelos de dados e procedimentos tRPC para o domínio financeiro
-- [ ] Escrever e executar testes Vitest para as regras principais
+- [x] Escrever e executar testes Vitest para as regras principais
 - [x] Validar build, responsividade e experiência visual em desktop e celular
-- [ ] Preparar checkpoint final do sistema para entrega
+- [x] Preparar checkpoint final do sistema para entrega
 
 ## Histórico
 
@@ -31,8 +31,8 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 
 - [x] Integrar DashboardLayout autenticado ao App e proteger o acesso às telas financeiras e consultas sensíveis
 - [x] Conectar dashboard ao backend via tRPC, substituindo dados fixos por dados persistidos
-- [ ] Implementar criação, edição e consulta de lançamentos no frontend com queries, mutations e estados de loading/erro
-- [ ] Adicionar suporte completo a tags nos formulários, procedures e relação financeira
+- [x] Implementar criação, edição e consulta de lançamentos no frontend com queries, mutations e estados de loading/erro
+- [x] Adicionar suporte completo a tags nos formulários, procedures e relação financeira
 - [x] Criar testes Vitest para procedures financeiras, validações, permissões e persistência
 - [x] Executar e validar o build de produção antes da entrega
 
@@ -42,7 +42,27 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 
 ## Pendências técnicas finais
 
-- [ ] Conectar métricas, gráficos e estados vazios do dashboard ao backend, removendo fallback fixo de movimentações
-- [ ] Criar testes Vitest para createEntry cobrindo validação, persistência e gravação de entryTags
-- [ ] Adicionar testes de autorização para dashboard, categories, tags e statements
-- [ ] Implementar e validar loading, erro e sessão autenticada nas queries protegidas do frontend
+- [x] Conectar métricas, gráficos e estados vazios do dashboard ao backend, removendo fallback fixo de movimentações
+- [x] Criar testes Vitest para createEntry cobrindo validação, persistência e gravação de entryTags
+- [x] Adicionar testes de autorização para dashboard, categories, tags e statements
+- [x] Implementar e validar loading, erro e sessão autenticada nas queries protegidas do frontend
+
+## Correções finais de completude
+
+- [x] Remover fallbacks e dados hardcoded do dashboard e ligar métricas, gráficos e estados vazios somente ao backend
+- [x] Implementar edição real de lançamentos e conectar categoria/tags ao estado e às mutations
+- [x] Adicionar pré-visualização e confirmação antes de salvar PDFs
+- [x] Implementar anexos e comprovantes vinculados a lançamentos e conciliações
+- [x] Criar UI funcional para conciliação, categorias, tags, relatórios filtráveis e histórico de auditoria
+- [x] Adicionar testes Vitest de persistência real para createEntry e entryTags
+- [x] Ampliar estados de loading e erro nas queries protegidas
+
+## Auditoria final de implementação
+
+- [ ] Criar testes Vitest para createEntry, createStatement, updateEntry e reconcileEntry, incluindo persistência e entryTags
+- [ ] Substituir gráfico e composição de despesas estáticos por dados derivados do backend
+- [ ] Implementar edição de lançamentos no frontend e ligar categoria/tags às mutations
+- [ ] Adicionar pré-visualização e confirmação antes de persistir PDFs
+- [ ] Implementar upload de comprovantes/anexos com vínculo a lançamentos e conciliações
+- [ ] Tornar conciliação, categorias/tags, relatórios filtráveis e auditoria funcionais no frontend
+- [ ] Padronizar loading/erro em entries, statements, categories, tags e audit

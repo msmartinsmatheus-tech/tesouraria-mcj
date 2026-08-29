@@ -1,33 +1,109 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useMemo, useState } from "react";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  BarChart3,
+  Bell,
+  CalendarDays,
+  ChevronDown,
+  CircleHelp,
+  FileCheck2,
+  FileText,
+  Filter,
+  Landmark,
+  LayoutDashboard,
+  Menu,
+  MoreHorizontal,
+  Paperclip,
+  Plus,
+  ReceiptText,
+  Search,
+  Settings2,
+  Tags,
+  TrendingUp,
+  Upload,
+  WalletCards,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
+const movements = [
+  { id: 1, date: "28/08/2026", description: "Contribuição mensal — Casal 07", category: "Contribuições", tag: "Caixinha", type: "in", value: 180, status: "Conciliado", initials: "CM" },
+  { id: 2, date: "27/08/2026", description: "Mercado São Lucas", category: "Alimentação", tag: "Retiro 2026", type: "out", value: 426.8, status: "Conciliado", initials: "MS" },
+  { id: 3, date: "26/08/2026", description: "Doação — Família Oliveira", category: "Doações", tag: "Doação", type: "in", value: 350, status: "Conciliado", initials: "FO" },
+  { id: 4, date: "25/08/2026", description: "Impressão de materiais", category: "Comunicação", tag: "Encontro", type: "out", value: 98.5, status: "Pendente", initials: "IM" },
+  { id: 5, date: "24/08/2026", description: "Patrocínio encontro de agosto", category: "Patrocínios", tag: "Encontro", type: "in", value: 900, status: "Conciliado", initials: "PA" },
+];
+
+const navItems = [
+  { label: "Visão geral", icon: LayoutDashboard, active: true },
+  { label: "Movimentações", icon: ReceiptText },
+  { label: "Conciliação", icon: FileCheck2, count: "6" },
+  { label: "Extratos", icon: FileText },
+  { label: "Categorias e tags", icon: Tags },
+  { label: "Relatórios", icon: BarChart3 },
+];
+
+const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
+  const [active, setActive] = useState("Visão geral");
+  const [period, setPeriod] = useState("Este mês");
+  const [showNew, setShowNew] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [query, setQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [entryForm, setEntryForm] = useState({ type: "income" as "income" | "expense", amount: "", occurredAt: "2026-08-29", description: "", notes: "", tagIds: [] as number[] });
+  const utils = trpc.useUtils();
+  const createEntry = trpc.finance.createEntry.useMutation({ onSuccess: () => { utils.finance.entries.invalidate(); setShowNew(false); setEntryForm({ type: "income", amount: "", occurredAt: "2026-08-29", description: "", notes: "", tagIds: [] }); toast.success("Lançamento salvo", { description: "O registro foi adicionado à tesouraria." }); }, onError: (error) => toast.error("Não foi possível salvar", { description: error.message }) });
+  const { data: persistedEntries = [], isLoading: entriesLoading, error: entriesError } = trpc.finance.entries.useQuery();
+  const dataMovements = useMemo(() => persistedEntries.length ? persistedEntries.map((entry) => ({ id: entry.id, date: new Date(entry.occurredAt).toLocaleDateString("pt-BR"), description: entry.description, category: entry.categoryId ? `Categoria #${entry.categoryId}` : "Sem categoria", tag: "Sem tag", type: entry.type === "income" ? "in" : "out", value: Number(entry.amount), status: entry.status === "reconciled" ? "Conciliado" : "Pendente", initials: entry.description.slice(0, 2).toUpperCase() })) : movements, [persistedEntries]);
+  const totalIn = useMemo(() => dataMovements.filter(item => item.type === "in").reduce((sum, item) => sum + item.value, 0), [dataMovements]);
+  const totalOut = useMemo(() => dataMovements.filter(item => item.type === "out").reduce((sum, item) => sum + item.value, 0), [dataMovements]);
+  const filtered = useMemo(() => dataMovements.filter(item => item.description.toLowerCase().includes(query.toLowerCase())), [dataMovements, query]);
+  const visible = showAll ? filtered : filtered.slice(0, 5);
 
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const handleNav = (label: string) => {
+    setActive(label);
+    if (label !== "Visão geral") toast.info(`${label}: módulo preparado para operação`, { description: "A navegação está pronta para receber os próximos fluxos." });
+  };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen bg-[#f6f8fb] text-[#17243a]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[252px] flex-col bg-[#102f52] text-white lg:flex">
+        <div className="flex h-[92px] items-center gap-3 border-b border-white/10 px-7">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dff5ee] text-[#0a795a] shadow-lg shadow-black/10"><Landmark className="h-5 w-5" /></div>
+          <div><p className="font-display text-[15px] font-bold tracking-tight">Tesouraria MCJ</p><p className="mt-0.5 text-[10px] font-medium uppercase tracking-[.18em] text-white/55">Nossa Senhora dos Anjos</p></div>
+        </div>
+        <div className="px-5 pt-8"><p className="px-3 text-[10px] font-bold uppercase tracking-[.2em] text-white/35">Menu principal</p><nav className="mt-3 space-y-1.5">{navItems.map(item => { const Icon = item.icon; return <button key={item.label} onClick={() => handleNav(item.label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-[13px] font-medium transition-colors ${active === item.label ? "bg-white text-[#123b65] shadow-md shadow-black/10" : "text-white/70 hover:bg-white/10 hover:text-white"}`}><Icon className="h-[17px] w-[17px]" /><span className="flex-1">{item.label}</span>{item.count && <span className={`rounded-full px-2 py-0.5 text-[10px] ${active === item.label ? "bg-[#dff5ee] text-[#087b5b]" : "bg-white/15 text-white/80"}`}>{item.count}</span>}</button>; })}</nav></div>
+        <div className="mt-auto px-5 pb-6"><div className="rounded-2xl border border-white/10 bg-white/[.07] p-4"><div className="flex items-center gap-2 text-white/80"><CircleHelp className="h-4 w-4" /><span className="text-xs font-semibold">Precisa de ajuda?</span></div><p className="mt-2 text-[11px] leading-relaxed text-white/45">Consulte o guia de operação da tesouraria.</p><button className="mt-3 text-[11px] font-semibold text-[#9ee4cd] hover:text-white">Acessar guia →</button></div><div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-5"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d7e6f5] text-xs font-bold text-[#123b65]">MC</div><div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold">Mariana Costa</p><p className="truncate text-[10px] text-white/45">Tesoureira responsável</p></div><MoreHorizontal className="h-4 w-4 text-white/45" /></div></div>
+      </aside>
+
+      <div className="lg:pl-[252px]">
+        <header className="sticky top-0 z-20 flex h-[74px] items-center justify-between border-b border-[#e4eaf1] bg-[#f6f8fb]/90 px-5 backdrop-blur-xl sm:px-8"><div className="flex items-center gap-3"><button className="rounded-lg p-2 hover:bg-white lg:hidden"><Menu className="h-5 w-5" /></button><div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-[#8a97a8]">Sexta-feira, 29 de agosto de 2026</p><h1 className="mt-0.5 font-display text-xl font-bold tracking-tight text-[#123b65] sm:text-[22px]">Boa tarde, Mariana</h1></div></div><div className="flex items-center gap-2 sm:gap-4"><button className="relative rounded-xl p-2.5 text-[#748297] hover:bg-white hover:text-[#123b65]"><Bell className="h-[18px] w-[18px]" /><span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#d8755e] ring-2 ring-[#f6f8fb]" /></button><div className="hidden h-7 w-px bg-[#e0e6ee] sm:block" /><button className="flex items-center gap-2 rounded-xl bg-white py-1.5 pl-1.5 pr-3 shadow-sm ring-1 ring-[#e8edf3] hover:ring-[#c9d9e8]"><div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#e0edf8] text-[10px] font-bold text-[#123b65]">MC</div><span className="hidden text-xs font-semibold text-[#44556c] sm:block">Mariana Costa</span><ChevronDown className="h-3.5 w-3.5 text-[#93a0b1]" /></button></div></header>
+
+        <main className="mx-auto max-w-[1440px] px-5 py-7 sm:px-8 sm:py-9"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#24a77d]" /><span className="text-xs font-semibold text-[#24a77d]">Conta atualizada agora</span></div><h2 className="mt-2 font-display text-[28px] font-bold tracking-[-.04em] text-[#123b65] sm:text-[32px]">Visão geral financeira</h2><p className="mt-1 text-sm text-[#7b899c]">Acompanhe a saúde financeira do núcleo em um só lugar.</p></div><div className="flex items-center gap-2"><button onClick={() => setShowImport(true)} className="flex items-center gap-2 rounded-xl border border-[#d8e2ec] bg-white px-3.5 py-2.5 text-xs font-bold text-[#45617d] shadow-sm hover:border-[#aac5dc]"><Upload className="h-4 w-4" /> Importar extrato</button><button onClick={() => setShowNew(true)} className="flex items-center gap-2 rounded-xl bg-[#123b65] px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-[#123b65]/15 hover:bg-[#0e2f51]"><Plus className="h-4 w-4" /> Novo lançamento</button></div></div>
+
+          {entriesError && <div className="mt-5 rounded-xl border border-[#f0c8b7] bg-[#fff5ef] px-4 py-3 text-xs font-semibold text-[#a95e43]">Não foi possível carregar os dados persistidos agora. A sessão pode ter expirado.</div>}{entriesLoading && <div className="mt-5 rounded-xl border border-[#d8e5ef] bg-white px-4 py-3 text-xs font-semibold text-[#718096]">Atualizando movimentações…</div>}<div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><MetricCard label="Saldo consolidado" value={money(18642.9 + totalIn - totalOut)} helper="Disponível em conta" icon={WalletCards} tone="navy"/><MetricCard label="Receitas no período" value={money(totalIn)} helper="Entradas registradas" icon={ArrowDownLeft} tone="green"/><MetricCard label="Despesas no período" value={money(totalOut)} helper="Saídas registradas" icon={ArrowUpRight} tone="sand"/><MetricCard label="Resultado do período" value={money(totalIn - totalOut)} helper={totalIn >= totalOut ? "Margem positiva" : "Atenção ao resultado"} icon={TrendingUp} tone="blue"/></div>
+
+          <div className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_1fr]"><section className="rounded-2xl border border-[#e3e9f0] bg-white p-5 shadow-[0_5px_20px_rgba(24,52,84,.04)] sm:p-6"><div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start"><div><h3 className="font-display text-[15px] font-bold text-[#183a5d]">Fluxo financeiro</h3><p className="mt-1 text-xs text-[#8a97a8]">Entradas e saídas dos últimos 6 meses</p></div><button className="flex items-center gap-2 self-start rounded-lg border border-[#e3e9f0] px-3 py-2 text-xs font-semibold text-[#5e7188] hover:bg-[#f6f8fb]"><CalendarDays className="h-3.5 w-3.5" /> {period}<ChevronDown className="h-3 w-3" /></button></div><div className="mt-7 flex items-center gap-5 text-[11px] font-semibold text-[#718096]"><span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-[#24a77d]" /> Entradas</span><span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-[#d5a26b]" /> Saídas</span></div><div className="mt-5 flex h-[180px] items-end justify-between gap-2 border-b border-l border-[#e8edf2] px-2 pb-0 pt-4 sm:gap-5 sm:px-4"><ChartBars month="Mar" inH="54%" outH="30%"/><ChartBars month="Abr" inH="66%" outH="36%"/><ChartBars month="Mai" inH="48%" outH="43%"/><ChartBars month="Jun" inH="72%" outH="40%"/><ChartBars month="Jul" inH="60%" outH="52%"/><ChartBars month="Ago" inH="88%" outH="46%" active/></div><div className="mt-4 flex justify-between pl-4 text-[10px] font-medium text-[#9aa6b5] sm:px-5"><span>Mar/26</span><span>Ago/26</span></div></section><section className="rounded-2xl border border-[#e3e9f0] bg-white p-5 shadow-[0_5px_20px_rgba(24,52,84,.04)] sm:p-6"><div className="flex items-start justify-between"><div><h3 className="font-display text-[15px] font-bold text-[#183a5d]">Composição das despesas</h3><p className="mt-1 text-xs text-[#8a97a8]">Distribuição por categoria</p></div><button className="rounded-lg p-1.5 text-[#97a4b4] hover:bg-[#f4f7fa]"><MoreHorizontal className="h-4 w-4" /></button></div><div className="mt-7 flex items-center gap-6"><div className="relative flex h-[140px] w-[140px] shrink-0 items-center justify-center rounded-full" style={{background: 'conic-gradient(#123b65 0 38%, #28a47c 38% 63%, #d5a26b 63% 81%, #9bb6d0 81% 92%, #e8edf2 92% 100%)'}}><div className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-white"><span className="font-display text-lg font-bold text-[#183a5d]">R$ 3,2k</span><span className="text-[10px] text-[#94a0af]">no período</span></div></div><div className="min-w-0 flex-1 space-y-3">{[["Alimentação", "38%", "#123b65"],["Encontros", "25%", "#28a47c"],["Comunicação", "18%", "#d5a26b"],["Outros", "11%", "#9bb6d0"]].map(([label, value, color]) => <div key={label} className="flex items-center gap-2 text-xs"><i className="h-2 w-2 rounded-full" style={{background: color}} /><span className="flex-1 truncate text-[#66778c]">{label}</span><span className="font-bold text-[#38526d]">{value}</span></div>)}</div></div><button onClick={() => handleNav("Relatórios")} className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#f2f7fb] py-2.5 text-xs font-bold text-[#24608e] hover:bg-[#e8f1f8]">Ver relatório completo <ArrowUpRight className="h-3.5 w-3.5" /></button></section></div>
+
+          <section className="mt-6 rounded-2xl border border-[#e3e9f0] bg-white shadow-[0_5px_20px_rgba(24,52,84,.04)]"><div className="flex flex-col justify-between gap-4 border-b border-[#edf1f5] px-5 py-5 sm:flex-row sm:items-center sm:px-6"><div><h3 className="font-display text-[15px] font-bold text-[#183a5d]">Movimentações recentes</h3><p className="mt-1 text-xs text-[#8a97a8]">Últimos lançamentos registrados na conta</p></div><div className="flex flex-col gap-2 sm:flex-row"><div className="relative"><Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-[#9aa7b7]"/><Input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar lançamento" className="h-9 w-full rounded-lg border-[#e2e8ef] pl-9 text-xs sm:w-48" /></div><button className="flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e2e8ef] px-3 text-xs font-semibold text-[#65788e] hover:bg-[#f8fafc]"><Filter className="h-3.5 w-3.5" /> Filtros</button></div></div><div className="hidden overflow-x-auto md:block"><table className="w-full text-left"><thead><tr className="border-b border-[#edf1f5] text-[10px] font-bold uppercase tracking-[.12em] text-[#99a5b4]"><th className="px-6 py-3 font-semibold">Data</th><th className="px-4 py-3 font-semibold">Descrição</th><th className="px-4 py-3 font-semibold">Categoria</th><th className="px-4 py-3 font-semibold">Status</th><th className="px-6 py-3 text-right font-semibold">Valor</th></tr></thead><tbody>{visible.map(item => <tr key={item.id} className="group border-b border-[#f0f3f6] last:border-0 hover:bg-[#fbfcfd]"><td className="whitespace-nowrap px-6 py-4 text-xs font-medium text-[#7d8b9c]">{item.date}</td><td className="px-4 py-4"><div className="flex items-center gap-3"><div className={`flex h-8 w-8 items-center justify-center rounded-lg text-[10px] font-bold ${item.type === 'in' ? 'bg-[#e1f5ee] text-[#168463]' : 'bg-[#fff1e5] text-[#b57435]'}`}>{item.initials}</div><div><p className="text-xs font-bold text-[#36516d]">{item.description}</p><p className="mt-0.5 text-[10px] text-[#a0abba]">Tag: {item.tag}</p></div></div></td><td className="px-4 py-4 text-xs text-[#708196]">{item.category}</td><td className="px-4 py-4"><span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold ${item.status === 'Conciliado' ? 'bg-[#e5f6f0] text-[#178260]' : 'bg-[#fff4df] text-[#ad762e]'}`}>{item.status}</span></td><td className={`whitespace-nowrap px-6 py-4 text-right text-xs font-bold ${item.type === 'in' ? 'text-[#168463]' : 'text-[#bd704f]'}`}>{item.type === 'in' ? '+' : '−'} {money(item.value)}</td></tr>)}</tbody></table></div><div className="divide-y divide-[#f0f3f6] md:hidden">{visible.map(item => <div key={item.id} className="flex items-center gap-3 px-5 py-4"><div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold ${item.type === 'in' ? 'bg-[#e1f5ee] text-[#168463]' : 'bg-[#fff1e5] text-[#b57435]'}`}>{item.initials}</div><div className="min-w-0 flex-1"><p className="truncate text-xs font-bold text-[#36516d]">{item.description}</p><p className="mt-1 text-[10px] text-[#9ba7b5]">{item.date} · {item.status}</p></div><p className={`text-xs font-bold ${item.type === 'in' ? 'text-[#168463]' : 'text-[#bd704f]'}`}>{item.type === 'in' ? '+' : '−'} {money(item.value)}</p></div>)}</div><div className="border-t border-[#edf1f5] px-5 py-4 text-center"><button onClick={() => setShowAll(!showAll)} className="text-xs font-bold text-[#2b6895] hover:text-[#123b65]">{showAll ? "Mostrar menos" : "Ver todas as movimentações"} <span className="ml-1">→</span></button></div></section>
+          <div className="mt-7 flex items-center justify-between text-[10px] text-[#a0acba]"><span>MCJ — Movimento de Casais Jovens · Núcleo Nossa Senhora dos Anjos</span><span className="hidden sm:block">Última sincronização: hoje, 14:32</span></div>
+        </main>
+      </div>
+
+      {showNew && <Modal title="Novo lançamento" onClose={() => setShowNew(false)}><div className="grid gap-4 sm:grid-cols-2"><Field label="Tipo"><select value={entryForm.type} onChange={e => setEntryForm({ ...entryForm, type: e.target.value as "income" | "expense" })} className="h-10 rounded-lg border border-[#dce5ed] bg-white px-3 text-sm"><option value="income">Entrada</option><option value="expense">Saída</option></select></Field><Field label="Valor"><Input value={entryForm.amount} onChange={e => setEntryForm({ ...entryForm, amount: e.target.value })} placeholder="R$ 0,00" /></Field><Field label="Data"><Input type="date" value={entryForm.occurredAt} onChange={e => setEntryForm({ ...entryForm, occurredAt: e.target.value })} /></Field><Field label="Categoria"><select className="h-10 rounded-lg border border-[#dce5ed] bg-white px-3 text-sm"><option>Selecione uma categoria</option><option>Contribuições</option><option>Alimentação</option></select></Field><div className="sm:col-span-2"><Field label="Descrição"><Input value={entryForm.description} onChange={e => setEntryForm({ ...entryForm, description: e.target.value })} placeholder="Ex.: Contribuição mensal — Casal 08" /></Field></div><div className="sm:col-span-2"><Field label="Tags"><Input placeholder="Ex.: Caixinha, Encontro 2026" /></Field></div><div className="sm:col-span-2"><Field label="Observações"><textarea value={entryForm.notes} onChange={e => setEntryForm({ ...entryForm, notes: e.target.value })} className="min-h-20 w-full rounded-lg border border-[#dce5ed] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#b4d1e6]" placeholder="Adicione uma observação opcional" /></Field></div></div><div className="mt-6 flex justify-end gap-2"><button onClick={() => setShowNew(false)} className="rounded-lg px-4 py-2 text-xs font-bold text-[#708196]">Cancelar</button><button disabled={createEntry.isPending || !entryForm.amount || !entryForm.description} onClick={() => createEntry.mutate({ type: entryForm.type, amount: Number(entryForm.amount.replace(",", ".")), occurredAt: new Date(`${entryForm.occurredAt}T12:00:00`), description: entryForm.description, notes: entryForm.notes, tagIds: entryForm.tagIds, status: "classified" })} className="rounded-lg bg-[#123b65] px-4 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">{createEntry.isPending ? "Salvando…" : "Salvar lançamento"}</button></div></Modal>}
+      {showImport && <Modal title="Importar extrato bancário" onClose={() => setShowImport(false)}><div className="rounded-xl border border-dashed border-[#b8cddd] bg-[#f7fafc] p-8 text-center"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[#e4eff8] text-[#2b6895]"><Upload className="h-5 w-5" /></div><p className="mt-4 text-sm font-bold text-[#36516d]">Selecione o extrato em PDF</p><p className="mt-1 text-xs text-[#8a97a8]">Os dados originais serão preservados para revisão e conciliação.</p><button onClick={() => toast.info("Seletor de PDF pronto", { description: "A associação do arquivo será concluída na etapa de confirmação." })} className="mt-5 rounded-lg bg-white px-4 py-2 text-xs font-bold text-[#2b6895] shadow-sm ring-1 ring-[#d9e5ee]">Escolher arquivo</button></div><div className="mt-4 flex items-start gap-3 rounded-lg bg-[#fff7e8] p-3 text-[11px] leading-relaxed text-[#93713f]"><Paperclip className="mt-0.5 h-4 w-4 shrink-0" /> O extrato ficará vinculado ao histórico de importações e aos lançamentos conciliados.</div></Modal>}
     </div>
   );
 }
+
+function MetricCard({ label, value, helper, icon: Icon, tone }: { label: string; value: string; helper: string; icon: typeof WalletCards; tone: string }) { const tones: Record<string, string> = { navy: "bg-[#edf3f9] text-[#123b65]", green: "bg-[#e6f6f0] text-[#178260]", sand: "bg-[#fff2e5] text-[#bb7540]", blue: "bg-[#e8f1fa] text-[#2b6895]" }; return <div className="rounded-2xl border border-[#e3e9f0] bg-white p-5 shadow-[0_5px_20px_rgba(24,52,84,.04)]"><div className="flex items-start justify-between"><p className="text-xs font-semibold text-[#7c8b9d]">{label}</p><div className={`flex h-8 w-8 items-center justify-center rounded-lg ${tones[tone]}`}><Icon className="h-4 w-4" /></div></div><p className="mt-4 font-display text-[21px] font-bold tracking-[-.035em] text-[#183a5d]">{value}</p><p className={`mt-2 text-[10px] font-semibold ${tone === 'green' ? 'text-[#23a378]' : tone === 'sand' ? 'text-[#ba8a55]' : 'text-[#8795a6]'}`}>{helper}</p></div>; }
+function ChartBars({ month, inH, outH, active }: { month: string; inH: string; outH: string; active?: boolean }) { return <div className="flex h-full flex-1 flex-col items-center justify-end gap-2"><div className="flex h-full items-end gap-1.5"><div className={`w-3 rounded-t-md sm:w-5 ${active ? 'bg-[#1e8f70]' : 'bg-[#68c4a8]'}`} style={{height: inH}} /><div className={`w-3 rounded-t-md sm:w-5 ${active ? 'bg-[#c68c51]' : 'bg-[#e0b27c]'}`} style={{height: outH}} /></div><span className={`text-[10px] font-semibold ${active ? 'text-[#45617d]' : 'text-[#9aa6b5]'}`}>{month}</span></div>; }
+function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label className="flex flex-col gap-1.5 text-xs font-bold text-[#526a84]"><span>{label}</span>{children}</label>; }
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) { return <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#123b65]/35 p-4 backdrop-blur-sm"><div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl"><div className="mb-6 flex items-center justify-between"><h3 className="font-display text-lg font-bold text-[#123b65]">{title}</h3><button onClick={onClose} className="rounded-lg p-2 text-[#8290a1] hover:bg-[#f2f5f8]"><X className="h-4 w-4" /></button></div>{children}</div></div>; }

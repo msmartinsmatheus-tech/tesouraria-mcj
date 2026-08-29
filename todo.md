@@ -79,3 +79,9 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 
 - [x] Validar a logo do MCJ em viewport mobile após a inclusão
 - [x] Validar visualmente a logo no estado autenticado do sidebar
+
+## Identidade visual — verde predominante
+
+- [x] Tornar o verde a cor predominante da identidade visual do MCJ
+- [x] Revisar contraste, botões, sidebar, cards e estados financeiros com a nova paleta
+- [x] Validar a paleta verde em desktop e celular

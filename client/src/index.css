@@ -11,18 +11,18 @@
   --card-foreground: #17243a;
   --popover: #ffffff;
   --popover-foreground: #17243a;
-  --primary: #123b65;
+  --primary: #147a5f;
   --primary-foreground: #ffffff;
-  --secondary: #e9f0f7;
-  --secondary-foreground: #123b65;
+  --secondary: #e2f1eb;
+  --secondary-foreground: #0f6b53;
   --muted: #eef2f6;
   --muted-foreground: #6f7d91;
   --accent: #dff5ee;
-  --accent-foreground: #087b5b;
+  --accent-foreground: #0d7659;
   --destructive: #c84d4d;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #79a8d3;
+  --ring: #7bc6ad;
   --radius: 0.75rem;
 }
 
@@ -59,7 +59,7 @@ body { margin: 0; min-width: 320px; background: var(--background); color: var(--
 button { transition: transform .16s cubic-bezier(.23,1,.32,1), box-shadow .16s ease, background-color .16s ease; }
 button:active { transform: scale(.97); }
 .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-::selection { background: #b9dfd2; color: #123b65; }
+::selection { background: #b9dfd2; color: #0f5f4a; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

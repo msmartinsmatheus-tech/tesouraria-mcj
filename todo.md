@@ -59,10 +59,10 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 
 ## Auditoria final de implementação
 
-- [ ] Criar testes Vitest para createEntry, createStatement, updateEntry e reconcileEntry, incluindo persistência e entryTags
-- [ ] Substituir gráfico e composição de despesas estáticos por dados derivados do backend
-- [ ] Implementar edição de lançamentos no frontend e ligar categoria/tags às mutations
-- [ ] Adicionar pré-visualização e confirmação antes de persistir PDFs
-- [ ] Implementar upload de comprovantes/anexos com vínculo a lançamentos e conciliações
-- [ ] Tornar conciliação, categorias/tags, relatórios filtráveis e auditoria funcionais no frontend
-- [ ] Padronizar loading/erro em entries, statements, categories, tags e audit
+- [x] Criar testes Vitest para createEntry, createStatement, updateEntry e reconcileEntry, incluindo persistência e entryTags
+- [x] Substituir gráfico e composição de despesas estáticos por dados derivados do backend
+- [x] Implementar edição de lançamentos no frontend e ligar categoria/tags às mutations
+- [x] Adicionar pré-visualização e confirmação antes de persistir PDFs
+- [x] Implementar upload de comprovantes/anexos com vínculo a lançamentos e conciliações
+- [x] Tornar conciliação, categorias/tags, relatórios filtráveis e auditoria funcionais no frontend
+- [x] Padronizar loading/erro em entries, statements, categories, tags e audit

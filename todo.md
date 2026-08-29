@@ -66,3 +66,16 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 - [x] Implementar upload de comprovantes/anexos com vínculo a lançamentos e conciliações
 - [x] Tornar conciliação, categorias/tags, relatórios filtráveis e auditoria funcionais no frontend
 - [x] Padronizar loading/erro em entries, statements, categories, tags e audit
+
+## Bug reportado — 29/08/2026
+
+- [x] Corrigir navegação para abrir Movimentações, Conciliação, Extratos, Categorias e tags e Relatórios além da Visão geral
+- [x] Validar cada rota e o estado ativo da navegação em desktop e celular
+
+## Identidade visual — logo MCJ
+
+- [x] Incorporar a logo oficial do MCJ no shell da aplicação e nos pontos institucionais
+- [x] Validar contraste, proporção e responsividade da logo em desktop e celular
+
+- [x] Validar a logo do MCJ em viewport mobile após a inclusão
+- [x] Validar visualmente a logo no estado autenticado do sidebar

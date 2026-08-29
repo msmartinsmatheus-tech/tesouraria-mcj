@@ -22,6 +22,8 @@ import {
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import { BarChart3, FileCheck2, FileText, LayoutDashboard, LogOut, PanelLeft, ReceiptText, Tags } from "lucide-react";
+
+const MCJ_LOGO_URL = "/manus-storage/mcj-logo_18f5d5c6.png";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -65,7 +67,7 @@ export default function DashboardLayout({
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
           <div className="flex flex-col items-center gap-6">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dff5ee] text-[#087b5b]"><LayoutDashboard className="h-7 w-7" /></div>
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white p-2 shadow-sm"><img src={MCJ_LOGO_URL} alt="Logo do MCJ" className="h-full w-full object-contain" /></div>
             <h1 className="text-2xl font-semibold tracking-tight text-center text-[#123b65]">
               Acesso à Tesouraria MCJ
             </h1>
@@ -164,6 +166,7 @@ function DashboardLayoutContent({
         >
           <SidebarHeader className="h-16 justify-center">
             <div className="flex items-center gap-3 px-2 transition-all w-full">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white p-1"><img src={MCJ_LOGO_URL} alt="Logo do MCJ" className="h-full w-full object-contain" /></div>
               <button
                 onClick={toggleSidebar}
                 className="h-8 w-8 flex items-center justify-center hover:bg-accent rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
@@ -173,9 +176,9 @@ function DashboardLayoutContent({
               </button>
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
+<span className="font-display font-semibold tracking-tight truncate">
+                      Tesouraria MCJ
+                    </span>
                 </div>
               ) : null}
             </div>
@@ -249,6 +252,7 @@ function DashboardLayoutContent({
         {isMobile && (
           <div className="flex border-b h-14 items-center justify-between bg-background/95 px-2 backdrop-blur supports-[backdrop-filter]:backdrop-blur sticky top-0 z-40">
             <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white p-1 shadow-sm"><img src={MCJ_LOGO_URL} alt="Logo do MCJ" className="h-full w-full object-contain" /></div>
               <SidebarTrigger className="h-9 w-9 rounded-lg bg-background" />
               <div className="flex items-center gap-3">
                 <div className="flex flex-col gap-1">

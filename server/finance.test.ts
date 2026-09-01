@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateCurrentBalance, formatBRL } from "../shared/finance";
+import { calculateCurrentBalance, calculateStatementCounts, formatBRL } from "../shared/finance";
 
 describe("finance rules", () => {
   it("calculates balance from initial value, income and expense", () => {
@@ -19,5 +19,12 @@ describe("finance rules", () => {
   it("formats values using Brazilian currency", () => {
     expect(formatBRL(18642.9)).toContain("18.642,90");
     expect(formatBRL(18642.9)).toContain("R$");
+  });
+});
+
+
+describe("statement reconciliation counts", () => {
+  it("counts each statement line by status", () => {
+    expect(calculateStatementCounts([{ status: "matched" }, { status: "pending" }, { status: "divergence" }])).toEqual({ total: 3, matched: 1, pending: 1, divergence: 1, completion: 33 });
   });
 });

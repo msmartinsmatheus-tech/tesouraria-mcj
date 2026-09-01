@@ -103,3 +103,28 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 - [x] Implementar confirmação explícita da conciliação e atualização das listas
 - [x] Adicionar testes Vitest para vínculo e autorização da conciliação
 - [x] Validar o fluxo completo no preview em desktop e celular
+
+## Ajuste solicitado — conciliação lançamento por lançamento
+
+- [x] Remover a dependência de seleção do extrato inteiro para conciliar
+- [x] Exibir cada transação do extrato como uma linha independente
+- [x] Permitir selecionar e confirmar um lançamento correspondente por linha
+- [x] Permitir marcar divergência ou deixar pendente individualmente
+- [x] Atualizar contadores e auditoria por transação conciliada
+- [x] Validar o fluxo individual em desktop e celular
+
+## Refinamento da conciliação individual
+
+- [x] Adicionar ação por linha para marcar divergência e retornar transação para pendente
+- [x] Atualizar contadores da conciliação com base nas transações do extrato
+- [x] Persistir e refletir movementCount e pendingCount do extrato
+- [x] Validar conciliação individual em desktop com atualização visível
+
+## Ajustes finais de contadores
+
+- [x] Usar os contadores de statementTransactions selecionadas nos cards de Conciliação
+- [x] Atualizar movementCount e pendingCount ao cadastrar linha do extrato
+- [x] Exibir contadores do extrato selecionado e validar atualização em desktop
+
+- [x] Validar no preview desktop o fluxo completo: cadastrar linha, conciliar e confirmar os contadores atualizados
+- [x] Adicionar teste automatizado para atualização dos contadores após mudança de status

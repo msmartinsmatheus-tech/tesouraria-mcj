@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, auditLogs, categories, entries, tags, statements, users } from "../drizzle/schema";
+import { InsertUser, auditLogs, categories, entries, tags, statements, statementTransactions, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -31,4 +31,5 @@ export async function listEntries() { const db = await getDb(); if (!db) return 
 export async function listCategories() { const db = await getDb(); if (!db) return []; return db.select().from(categories).orderBy(categories.name); }
 export async function listTags() { const db = await getDb(); if (!db) return []; return db.select().from(tags).orderBy(tags.name); }
 export async function listStatements() { const db = await getDb(); if (!db) return []; return db.select().from(statements).orderBy(desc(statements.importedAt)); }
+export async function listStatementTransactions(statementId?: number) { const db = await getDb(); if (!db) return []; return statementId ? db.select().from(statementTransactions).where(eq(statementTransactions.statementId, statementId)).orderBy(desc(statementTransactions.occurredAt)) : db.select().from(statementTransactions).orderBy(desc(statementTransactions.occurredAt)); }
 export async function createAuditLog(input: { actorId?: number; actorName?: string; action: string; entityType: string; entityId?: number; details?: string }) { const db = await getDb(); if (!db) return; await db.insert(auditLogs).values(input); }

@@ -47,6 +47,18 @@ export const statements = mysqlTable("bank_statements", {
   pendingCount: int("pendingCount").default(0).notNull(),
 });
 
+export const statementTransactions = mysqlTable("bank_statement_transactions", {
+  id: int("id").autoincrement().primaryKey(),
+  statementId: int("statementId").notNull(),
+  type: mysqlEnum("type", ["income", "expense"]).notNull(),
+  amount: decimal("amount", { precision: 14, scale: 2 }).notNull(),
+  occurredAt: timestamp("occurredAt").notNull(),
+  description: varchar("description", { length: 255 }).notNull(),
+  matchedEntryId: int("matchedEntryId"),
+  status: mysqlEnum("status", ["pending", "matched", "divergence"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export const entries = mysqlTable("financial_entries", {
   id: int("id").autoincrement().primaryKey(),
   type: mysqlEnum("type", ["income", "expense"]).notNull(),
@@ -99,3 +111,5 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type FinancialEntry = typeof entries.$inferSelect;
 export type InsertFinancialEntry = typeof entries.$inferInsert;
+export type StatementTransaction = typeof statementTransactions.$inferSelect;
+export type InsertStatementTransaction = typeof statementTransactions.$inferInsert;

@@ -93,3 +93,13 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 - [x] Implementar exclusão segura de movimentações com confirmação, auditoria e atualização das queries
 - [x] Adicionar testes Vitest para conciliação, geração de relatório e exclusão
 - [x] Validar os três fluxos no preview em desktop e celular
+
+## Bug reportado — conciliação sem transações do extrato
+
+- [x] Criar entidade persistente para transações importadas do extrato, vinculada ao statement
+- [x] Exibir transações importadas na tela de Conciliação, sem inventar dados quando o PDF não for lido
+- [x] Permitir vincular uma transação do extrato a um lançamento existente
+- [x] Persistir o vínculo, status conciliado/divergência e auditoria da operação
+- [x] Implementar confirmação explícita da conciliação e atualização das listas
+- [x] Adicionar testes Vitest para vínculo e autorização da conciliação
+- [x] Validar o fluxo completo no preview em desktop e celular

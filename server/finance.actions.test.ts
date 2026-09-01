@@ -18,4 +18,14 @@ describe("finance actions authorization", () => {
     const caller = appRouter.createCaller(unauthenticatedContext);
     await expect(caller.finance.deleteEntry({ id: 1 })).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
+
+  it("requires authentication to list statement transactions", async () => {
+    const caller = appRouter.createCaller(unauthenticatedContext);
+    await expect(caller.finance.statementTransactions({ statementId: 1 })).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  });
+
+  it("requires authentication to match a statement transaction", async () => {
+    const caller = appRouter.createCaller(unauthenticatedContext);
+    await expect(caller.finance.matchStatementTransaction({ transactionId: 1, entryId: 1, status: "matched" })).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  });
 });

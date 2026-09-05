@@ -45,6 +45,8 @@ export const statements = mysqlTable("bank_statements", {
   status: mysqlEnum("status", ["processing", "pending", "reconciled", "error"]).default("processing").notNull(),
   movementCount: int("movementCount").default(0).notNull(),
   pendingCount: int("pendingCount").default(0).notNull(),
+  extractedLines: int("extractedLines").default(0).notNull(),
+  unrecognizedLines: int("unrecognizedLines").default(0).notNull(),
 });
 
 export const statementTransactions = mysqlTable("bank_statement_transactions", {

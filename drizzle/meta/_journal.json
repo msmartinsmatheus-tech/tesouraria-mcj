@@ -29,6 +29,13 @@
       "when": 1788614594669,
       "tag": "0003_far_power_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1789520358343,
+      "tag": "0004_fat_groot",
+      "breakpoints": true
     }
   ]
 }

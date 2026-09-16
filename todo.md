@@ -136,15 +136,15 @@ A implementação deve priorizar uma base sólida e utilizável, sem inventar da
 - [x] Exibir quantidade de linhas extraídas e linhas não reconhecidas no histórico
 - [x] Manter linhas ambíguas como pendentes de revisão, sem inventar dados
 - [x] Alimentar a conciliação individual com as transações extraídas
-- [ ] Validar o fluxo com um PDF real do usuário e preservar o arquivo original
+- [x] Validar o fluxo com um PDF real do usuário e preservar o arquivo original
 - [x] Adicionar testes para extração, importação e criação de transações
 
 ## Transparência da leitura do PDF
 
 - [x] Persistir extractedLines e unrecognizedLines no registro do extrato
 - [x] Exibir esses contadores no histórico de importações
-- [ ] Preservar linhas com data/valor não reconhecidos como pendentes de revisão
+- [x] Preservar linhas com data/valor não reconhecidos como pendentes de revisão
 - [x] Criar testes do parser e da criação automática de transações
 
-- [ ] Testar createStatement gerando statementTransactions e atualizando os quatro contadores
-- [ ] Testar reprocessStatement recriando as transações a partir do PDF armazenado
+- [x] Testar createStatement gerando statementTransactions e atualizando os quatro contadores
+- [x] Testar reprocessStatement recriando as transações a partir do PDF armazenado

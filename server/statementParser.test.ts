@@ -18,7 +18,7 @@ describe("extractStatementLines", () => {
   });
 
   it("extracts Brazilian date, amount and debit/credit type", async () => {
-    getText.mockResolvedValue({ text: "01/07/2026 PIX RECEBIDO 1.250,00\n02/07/2026 D MERCADO 85,90" });
+    getText.mockResolvedValue({ text: "01/07/2026\nPIX RECEBIDO + R$ 1.250,00\n02/07/2026 D MERCADO - R$ 85,90" });
     const { extractStatementLines } = await import("./statementParser");
     const result = await extractStatementLines(Buffer.from("pdf"));
     expect(result.lines).toHaveLength(2);

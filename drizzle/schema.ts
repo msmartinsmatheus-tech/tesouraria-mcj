@@ -49,6 +49,14 @@ export const statements = mysqlTable("bank_statements", {
   unrecognizedLines: int("unrecognizedLines").default(0).notNull(),
 });
 
+export const statementReviewItems = mysqlTable("bank_statement_review_items", {
+  id: int("id").autoincrement().primaryKey(),
+  statementId: int("statementId").notNull(),
+  rawText: text("rawText").notNull(),
+  status: mysqlEnum("status", ["pending", "resolved"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export const statementTransactions = mysqlTable("bank_statement_transactions", {
   id: int("id").autoincrement().primaryKey(),
   statementId: int("statementId").notNull(),

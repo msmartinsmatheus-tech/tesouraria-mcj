@@ -23,11 +23,12 @@ function fakeDb() {
 }
 
 describe("statement import integration", () => {
-  it("creates extracted transactions, review items and four counters", async () => {
+  it("creates extracted statement lines and matching pending movements", async () => {
     const { db, inserts, updates } = fakeDb(); mocks.getDb.mockResolvedValue(db); mocks.storagePut.mockResolvedValue({ key: "statements/101.pdf", url: "/manus-storage/statements/101.pdf" }); mocks.extractStatementLines.mockResolvedValue({ lines: [{ type: "income", amount: 120, occurredAt: new Date("2026-07-01"), description: "PIX" }], unrecognizedLines: 1, reviewLines: ["linha sem valor"] });
     const result = await appRouter.createCaller(context).finance.createStatement({ fileName: "extrato.pdf", base64Data: Buffer.from("pdf").toString("base64"), mimeType: "application/pdf" });
     expect(result).toMatchObject({ id: 101, extractedLines: 1, unrecognizedLines: 1 });
     expect(inserts.some(value => Array.isArray(value) && value[0]?.description === "PIX")).toBe(true);
+    expect(inserts.some(value => Array.isArray(value) && value[0]?.statementId === 101 && value[0]?.status === "pending")).toBe(true);
     expect(inserts.some(value => Array.isArray(value) && value[0]?.rawText === "linha sem valor")).toBe(true);
     expect(updates).toContainEqual(expect.objectContaining({ movementCount: 1, pendingCount: 1, extractedLines: 1, unrecognizedLines: 1 }));
   });

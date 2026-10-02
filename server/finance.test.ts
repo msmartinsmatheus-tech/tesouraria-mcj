@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { calculateCurrentBalance, calculateStatementCounts, formatBRL } from "../shared/finance";
+import { DEFAULT_CATEGORIES, DEFAULT_TAGS } from "./db";
 
 describe("finance rules", () => {
   it("calculates balance from initial value, income and expense", () => {
@@ -36,5 +37,12 @@ describe("institutional shell copy", () => {
     const homeSource = readFileSync(resolve(process.cwd(), "client/src/pages/Home.tsx"), "utf8");
     expect(homeSource).not.toContain("Mariana");
     expect(homeSource).toContain("Tesouraria MCJ");
+  });
+});
+
+describe("classification defaults", () => {
+  it("provides real default categories and tags for reconciliation", () => {
+    expect(DEFAULT_CATEGORIES.map(item => item.name)).toEqual(expect.arrayContaining(["Contribuições", "Alimentação", "Comunicação"]));
+    expect(DEFAULT_TAGS.map(item => item.name)).toEqual(expect.arrayContaining(["Mensalidade", "Encontro", "Administrativo"]));
   });
 });

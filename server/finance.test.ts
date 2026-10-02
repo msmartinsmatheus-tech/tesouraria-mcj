@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { calculateCurrentBalance, calculateStatementCounts, formatBRL } from "../shared/finance";
 
@@ -26,5 +28,13 @@ describe("finance rules", () => {
 describe("statement reconciliation counts", () => {
   it("counts each statement line by status", () => {
     expect(calculateStatementCounts([{ status: "matched" }, { status: "pending" }, { status: "divergence" }])).toEqual({ total: 3, matched: 1, pending: 1, divergence: 1, completion: 33 });
+  });
+});
+
+describe("institutional shell copy", () => {
+  it("does not expose the removed personal placeholder", () => {
+    const homeSource = readFileSync(resolve(process.cwd(), "client/src/pages/Home.tsx"), "utf8");
+    expect(homeSource).not.toContain("Mariana");
+    expect(homeSource).toContain("Tesouraria MCJ");
   });
 });
